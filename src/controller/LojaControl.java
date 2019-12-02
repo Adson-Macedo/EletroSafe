@@ -16,18 +16,23 @@ import model.Loja;
  * @author Adson
  */
 public abstract class LojaControl {
-    public static boolean cadastrarProduto(String[] dadosLoja) {
-        if (dadosLoja.length < 5) {
+    public static boolean cadastrarLoja(String[] dadosLoja) {
+        if (dadosLoja.length < 4) {
             return false;
+        }
+        
+        for (String dado : dadosLoja) {
+            if (dado == null)
+                return false;
         }
 
         try {
             Loja loja = new Loja(
                     null,
+                    dadosLoja[0],
                     dadosLoja[1],
                     dadosLoja[2],
-                    dadosLoja[3],
-                    dadosLoja[4]
+                    dadosLoja[3]
             );
 
             return Dao.insert(loja);
@@ -37,9 +42,14 @@ public abstract class LojaControl {
         }
     }
 
-    public static boolean alterarProduto(String[] dadosLoja) {
+    public static boolean alterarLoja(String[] dadosLoja) {
         if (dadosLoja.length < 5) {
             return false;
+        }
+
+        for (String dado : dadosLoja) {
+            if (dado == null)
+                return false;
         }
 
         try {
@@ -59,6 +69,9 @@ public abstract class LojaControl {
     }
     
     public static boolean excluirLoja(Integer id){
+        if (id == null)
+            return false;
+        
         try{
             return Dao.delete(new Loja(id));
         } catch (SQLException ex) {
@@ -68,6 +81,9 @@ public abstract class LojaControl {
     }
     
     public static String [] consultarLoja(Integer id){
+        if (id == null)
+            return null;
+        
         String [] dados = null;
         try{
             Object [] objectData = Dao.query(new Loja(id));
@@ -88,6 +104,9 @@ public abstract class LojaControl {
     }
     
     public static ArrayList<String []> listarLojas(String filtro){
+        if (filtro == null)
+            return null;
+        
         ArrayList<String []> lojas = new ArrayList();
         
         try {

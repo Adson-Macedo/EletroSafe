@@ -5,10 +5,6 @@
  */
 package model;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -34,6 +30,16 @@ public class Produto implements Entity{
         this.dataCompra = dataCompra;
         this.lojaCompra = new Loja(idLoja);
         this.notaFiscal = new NotaFiscal(idNF);
+        this.contratoGarantia = new ContratoGarantia(idGarantia);
+    }
+
+    public Produto(Integer id, String descricao, Double valor, Calendar dataCompra, Integer idLoja, String chaveNF, Integer idGarantia) {
+        this.id = id;
+        this.descricao = descricao;
+        this.valor = valor;
+        this.dataCompra = dataCompra;
+        this.lojaCompra = new Loja(idLoja);
+        this.notaFiscal = new NotaFiscal(chaveNF);
         this.contratoGarantia = new ContratoGarantia(idGarantia);
     }
 
@@ -104,82 +110,6 @@ public class Produto implements Entity{
         this.contratoGarantia = contratoGarantia;
     }
 
-    public static Produto consProduto(Integer id) throws SQLException{
-        Produto produto = null;
-        
-        if (id == null)
-            return null;
-        
-        Connection con = ConnectionFactory.getConnection();
-        PreparedStatement stmt = null;
-
-        try {
-            stmt = con.prepareStatement("SELECT * FROM produto WHERE id = ?;", 1);
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()){
-                Calendar dataCompra = Calendar.getInstance();
-                dataCompra.setTime(rs.getDate("datacompra"));
-            
-                produto = new Produto(
-                        rs.getInt("id"),
-                        rs.getString("descricao"),
-                        rs.getDouble("valor"),
-                        dataCompra,
-                        rs.getInt("id_loja"),
-                        rs.getInt("id_nf"),
-                        rs.getInt("id_contr_garantia")
-                );
-            }else{
-                return null;
-            }
-        } catch (SQLException ex) {
-            throw ex;
-        }finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
-
-        return produto;
-    }
-    
-    public static ArrayList<Produto> listarProdutos(String descricao) throws SQLException{
-        ArrayList<Produto> produtos = new ArrayList();
-        
-        if (descricao == null)
-            return null;
-        
-        Connection con = ConnectionFactory.getConnection();
-        PreparedStatement stmt = null;
-
-        try {
-            stmt = con.prepareStatement("SELECT * FROM produto WHERE descricao = ?;", 1);
-            stmt.setString(1, descricao);
-            ResultSet rs = stmt.executeQuery();
-            
-            while (rs.next()){
-                Calendar dataCompra = Calendar.getInstance();
-                dataCompra.setTime(rs.getDate("datacompra"));
-            
-                produtos.add(new Produto(
-                        rs.getInt("id"),
-                        rs.getString("descricao"),
-                        rs.getDouble("valor"),
-                        dataCompra,
-                        rs.getInt("id_loja"),
-                        rs.getInt("id_nf"),
-                        rs.getInt("id_contr_garantia")
-                ));
-            }
-        } catch (SQLException ex) {
-            throw ex;
-        }finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
-
-        return produtos;
-    }
-
     @Override
     public String[] getFields() {
         return new String []{
@@ -187,7 +117,7 @@ public class Produto implements Entity{
             "valor",
             "dataCompra",
             "id_loja",
-            "id_NF",
+            "chave_NF",
             "id_contr_garantia"
         };
     }
@@ -199,7 +129,7 @@ public class Produto implements Entity{
             this.getValor(),
             this.getDataCompra(),
             this.getLojaCompra().getId(),
-            this.getNotaFiscal().getId(),
+            this.getNotaFiscal().getChave(),
             this.getContratoGarantia().getId()
         };
     }
@@ -216,7 +146,7 @@ public class Produto implements Entity{
             Double.class,
             Calendar.class,
             Integer.class,
-            Integer.class,
+            String.class,
             Integer.class
         };
     }

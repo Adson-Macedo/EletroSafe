@@ -19,12 +19,13 @@ public class Conserto implements Entity {
     private ContratoGarantia garantia;
     private Calendar data;
     private NotaFiscal notaFiscal;
+    private Produto produto;
     
     public Conserto(Integer id){
         this.id = id;
     }
 
-    public Conserto(Integer id, String descricao, Integer idLoja, Double valor, Integer idGarantia, Calendar data, Integer idNotaFiscal) {
+    public Conserto(Integer id, String descricao, Integer idLoja, Double valor, Integer idGarantia, Calendar data, Integer idNotaFiscal, Integer idProduto) {
         this.id = id;
         this.descricao = descricao;
         this.lojaAssistencia = new Loja(idLoja);
@@ -32,6 +33,18 @@ public class Conserto implements Entity {
         this.garantia = new ContratoGarantia(idGarantia);
         this.data = data;
         this.notaFiscal = new NotaFiscal(idNotaFiscal);
+        this.produto = new Produto(idProduto);
+    }
+
+    public Conserto(Integer id, String descricao, Integer idLoja, Double valor, Integer idGarantia, Calendar data, String chaveNotaFiscal, Integer idProduto) {
+        this.id = id;
+        this.descricao = descricao;
+        this.lojaAssistencia = new Loja(idLoja);
+        this.valor = valor;
+        this.garantia = new ContratoGarantia(idGarantia);
+        this.data = data;
+        this.notaFiscal = new NotaFiscal(chaveNotaFiscal);
+        this.produto = new Produto(idProduto);
     }
 
     public Integer getId() {
@@ -78,6 +91,10 @@ public class Conserto implements Entity {
         return data;
     }
 
+    public Produto getProduto() {
+        return produto;
+    }
+
     public void setData(Calendar data) {
         this.data = data;
     }
@@ -98,7 +115,8 @@ public class Conserto implements Entity {
             "valor",
             "id_contr_garantia",
             "data",
-            "id_NF"
+            "chave_NF",
+            "id_produto"
         };
     }
 
@@ -108,9 +126,10 @@ public class Conserto implements Entity {
             getDescricao(),
             getLojaAssistencia().getId(),
             getValor(),
-            getGarantia(),
+            getGarantia().getId(),
             getData(),
-            getNotaFiscal()
+            getNotaFiscal().getChave(),
+            getProduto().getId()
         };
     }
 
@@ -122,6 +141,7 @@ public class Conserto implements Entity {
             Double.class,
             Integer.class,
             Calendar.class,
+            String.class,
             Integer.class
         };
     }

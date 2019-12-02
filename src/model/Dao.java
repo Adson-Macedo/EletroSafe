@@ -63,7 +63,7 @@ public class Dao {
         
         for (int i = 0; i < values.length; i++){
             if (values[i] == null){
-                stmt.setNull(i+1, 3);
+                //stmt.setNull(i+1, 3);
             }else if (fieldTypes[i] == Integer.class){
                 stmt.setInt(i+1, (Integer)values[i]);
             }else if (fieldTypes[i] == String.class){

@@ -49,10 +49,4 @@ public class TesteDao {
         assertFalse(Dao.delete(produto));
     }
 
-    @Test
-    public void testeConsProduto() throws SQLException{
-        Produto p = Produto.consProduto(1);
-        
-        //assertNull(p);
-    }
 }

@@ -22,56 +22,65 @@ import utils.Utils;
 public abstract class ProdutoControl {
 
     public static boolean cadastrarProduto(String[] dadosProduto) {
-        if (dadosProduto.length < 7) {
+        if (dadosProduto.length < 6) {
             return false;
         }
-
-        Produto produto;
         
+        for (String dado : dadosProduto) {
+            if (dado == null)
+                return false;
+        }
+
         try {
-            produto = new Produto(
-                    null,
-                    dadosProduto[0],
-                    Double.parseDouble(dadosProduto[1]),
-                    Utils.toCalendar(dadosProduto[2]),
-                    Integer.parseInt(dadosProduto[3]),
-                    Integer.parseInt(dadosProduto[4]),
-                    Integer.parseInt(dadosProduto[5])
+            Produto produto = new Produto(
+                    null,                                   //  id
+                    dadosProduto[0],                        //  descricao
+                    Double.parseDouble(dadosProduto[1]),    //  valor
+                    Utils.toCalendar(dadosProduto[2]),      //  data_compra
+                    Integer.parseInt(dadosProduto[3]),      //  id_loja
+                    dadosProduto[4],                        //  chave_NF
+                    Integer.parseInt(dadosProduto[5])       //  id_contr_garantia
             );
 
             return Dao.insert(produto);
-        } catch (ParseException | SQLException ex) {
+        } catch (ParseException | SQLException | NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
 
-    public static boolean alterarProduto(String[] dadosProduto) {
-        if (dadosProduto.length < 7) {
+    public static boolean alterarProduto(String[] dadosProduto, Integer id) {
+        if (id == null || dadosProduto == null || dadosProduto.length < 6) {
             return false;
         }
 
-        Produto produto;
-        
+        for (String dado : dadosProduto) {
+            if (dado == null)
+                return false;
+        }
+
         try {
-            produto = new Produto(
-                    Integer.parseInt(dadosProduto[0]),
-                    dadosProduto[1],
-                    Double.parseDouble(dadosProduto[2]),
-                    Utils.toCalendar(dadosProduto[3]),
-                    Integer.parseInt(dadosProduto[4]),
-                    Integer.parseInt(dadosProduto[5]),
-                    Integer.parseInt(dadosProduto[6])
+            Produto produto = new Produto(
+                    id,
+                    dadosProduto[0],
+                    Double.parseDouble(dadosProduto[1]),
+                    Utils.toCalendar(dadosProduto[2]),
+                    Integer.parseInt(dadosProduto[3]),
+                    dadosProduto[4],
+                    Integer.parseInt(dadosProduto[5])
             );
 
             return Dao.update(produto);
-        } catch (ParseException | SQLException ex) {
+        } catch (ParseException | SQLException | NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
     
     public static boolean excluirProduto(Integer id){
+        if (id == null)
+            return false;
+        
         try{
             return Dao.delete(new Produto(id));
         } catch (SQLException ex) {
@@ -81,6 +90,9 @@ public abstract class ProdutoControl {
     }
     
     public static String [] consultarProduto(Integer id){
+        if (id == null)
+            return null;
+
         String [] dados = null;
         try{
             Object [] objectData = Dao.query(new Produto(id));
@@ -105,7 +117,10 @@ public abstract class ProdutoControl {
         return dados;
     }
     
-    public static ArrayList<String []> listarProdutos(String filtro){
+    public static ArrayList<String []> obterListaProdutos(String filtro){
+        if (filtro == null)
+            return null;
+        
         ArrayList<String []> produtos = new ArrayList();
         
         try {

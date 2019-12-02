@@ -13,7 +13,6 @@ import java.util.Calendar;
 import javax.swing.JOptionPane;
 import model.Conserto;
 import model.Dao;
-import model.Produto;
 import utils.Utils;
 
 /**
@@ -21,10 +20,14 @@ import utils.Utils;
  * @author Adson
  */
 public abstract class ConsertoControl {
-    public static boolean cadastrarConserto(String[] dadosConserto) throws ParseException {
-        if (dadosConserto.length < 7) {
+    public static boolean incluirConserto(String[] dadosConserto, Integer idProduto) throws ParseException {
+        if (dadosConserto.length < 6) {
             return false;
         }
+        
+        for (String dado : dadosConserto)
+            if (dado == null)
+                return false;
 
         try {
             Conserto conserto = new Conserto(
@@ -34,20 +37,25 @@ public abstract class ConsertoControl {
                     Double.parseDouble(dadosConserto[2]),
                     Integer.parseInt(dadosConserto[3]),
                     Utils.toCalendar(dadosConserto[4]),
-                    Integer.parseInt(dadosConserto[5])
+                    dadosConserto[5],
+                    idProduto
             );
 
             return Dao.insert(conserto);
-        } catch (SQLException ex) {
+        } catch (ParseException | SQLException | NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
     
     public static boolean alterarConserto(String[] dadosConserto) {
-        if (dadosConserto.length < 7) {
+        if (dadosConserto.length < 8) {
             return false;
         }
+        
+        for (String dado : dadosConserto)
+            if (dado == null)
+                return false;
 
         try {
             Conserto conserto = new Conserto(
@@ -57,17 +65,21 @@ public abstract class ConsertoControl {
                     Double.parseDouble(dadosConserto[3]),
                     Integer.parseInt(dadosConserto[4]),
                     Utils.toCalendar(dadosConserto[5]),
-                    Integer.parseInt(dadosConserto[6])
+                    dadosConserto[6],
+                    Integer.parseInt(dadosConserto[7])
             );
 
             return Dao.update(conserto);
-        } catch (ParseException | SQLException ex) {
+        } catch (ParseException | SQLException | NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
     
-    public static boolean excluirConserto(Integer id){
+    public static boolean removerConserto(Integer id){
+        if (id == null)
+            return false;
+        
         try{
             return Dao.delete(new Conserto(id));
         } catch (SQLException ex) {
@@ -77,6 +89,9 @@ public abstract class ConsertoControl {
     }
     
     public static String [] consultarConserto(Integer id){
+        if (id == null)
+            return null;
+        
         String [] dados = null;
         try{
             Object [] objectData = Dao.query(new Conserto(id));
@@ -102,6 +117,9 @@ public abstract class ConsertoControl {
     }
     
     public static ArrayList<String []> listarConsertos(Integer idProduto){
+        if (idProduto == null)
+            return null;
+        
         ArrayList<String []> produtos = new ArrayList();
         
         try {
@@ -112,13 +130,13 @@ public abstract class ConsertoControl {
                 String dataConserto = sdf.format(((Calendar)item[4]).getTime());
 
                 produtos.add(new String[]{
-                    item[6].toString(),
-                    item[0].toString(),
-                    item[1].toString(),
-                    item[2].toString(),
-                    item[3].toString(),
-                    dataConserto,
-                    item[5].toString()
+                    item[6].toString(), //  id
+                    item[0].toString(), //  descricao
+                    item[1].toString(), //  id_loja
+                    item[2].toString(), //  valor
+                    item[3].toString(), //  id_contr_garantia
+                    dataConserto,       //  data
+                    item[5].toString()  //  id_nf
                 });
             }
         } catch (SQLException ex) {
