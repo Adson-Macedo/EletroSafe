@@ -20,7 +20,7 @@ import utils.Utils;
 public abstract class NotaFiscalControl {
 
     public static boolean incluirNF(String[] dadosNotaFiscal) {
-        if (dadosNotaFiscal.length < 4) {
+        if (dadosNotaFiscal == null || dadosNotaFiscal.length < 4) {
             return false;
         }
 
@@ -31,11 +31,11 @@ public abstract class NotaFiscalControl {
 
         try {
             NotaFiscal notaFiscal = new NotaFiscal(
-                    null, //  id
-                    dadosNotaFiscal[0], //  chave
-                    Utils.toCalendar(dadosNotaFiscal[1]), //  data
+                    null,                                   //  id
+                    dadosNotaFiscal[0],                     //  chave
+                    Utils.toCalendar(dadosNotaFiscal[1]),   //  data
                     Double.parseDouble(dadosNotaFiscal[2]), //  valor
-                    dadosNotaFiscal[3] //  nota_fiscal
+                    dadosNotaFiscal[3]                      //  nota_fiscal
             );
 
             return Dao.insert(notaFiscal);
@@ -45,8 +45,8 @@ public abstract class NotaFiscalControl {
         }
     }
 
-    public static boolean alterarNF(String[] dadosNotaFiscal) {
-        if (dadosNotaFiscal.length < 5) {
+    public static boolean alterarNF(String[] dadosNotaFiscal, Integer idNotaFiscal) {
+        if (dadosNotaFiscal == null || idNotaFiscal == null || dadosNotaFiscal.length < 4) {
             return false;
         }
 
@@ -57,11 +57,11 @@ public abstract class NotaFiscalControl {
 
         try {
             NotaFiscal notaFiscal = new NotaFiscal(
-                    Integer.parseInt(dadosNotaFiscal[0]), //  id
-                    dadosNotaFiscal[1], //  chave
-                    Utils.toCalendar(dadosNotaFiscal[2]), //  data
-                    Double.parseDouble(dadosNotaFiscal[3]), //  valor
-                    dadosNotaFiscal[4] //  nota_fiscal
+                    idNotaFiscal,                           //  id
+                    dadosNotaFiscal[0],                     //  chave
+                    Utils.toCalendar(dadosNotaFiscal[1]),   //  data
+                    Double.parseDouble(dadosNotaFiscal[2]), //  valor
+                    dadosNotaFiscal[3]                      //  nota_fiscal
             );
 
             return Dao.update(notaFiscal);
@@ -79,7 +79,7 @@ public abstract class NotaFiscalControl {
         try {
             ArrayList<Object[]> lista = Dao.query(new NotaFiscal(), "chave", chave);
             
-            if (!lista.isEmpty()) {
+            if (lista != null && !lista.isEmpty()) {
                 Object[] objectData = lista.get(0);
 
                 dados = new String[]{
@@ -96,7 +96,5 @@ public abstract class NotaFiscalControl {
 
         return dados;
     }
-    
-   
 
 }

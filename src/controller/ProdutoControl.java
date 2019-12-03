@@ -22,7 +22,7 @@ import utils.Utils;
 public abstract class ProdutoControl {
 
     public static boolean cadastrarProduto(String[] dadosProduto) {
-        if (dadosProduto.length < 6) {
+        if (dadosProduto == null || dadosProduto.length < 6) {
             return false;
         }
         
@@ -49,8 +49,8 @@ public abstract class ProdutoControl {
         }
     }
 
-    public static boolean alterarProduto(String[] dadosProduto, Integer id) {
-        if (id == null || dadosProduto == null || dadosProduto.length < 6) {
+    public static boolean alterarProduto(String[] dadosProduto, Integer idProduto) {
+        if (idProduto == null || dadosProduto == null || dadosProduto.length < 6) {
             return false;
         }
 
@@ -61,7 +61,7 @@ public abstract class ProdutoControl {
 
         try {
             Produto produto = new Produto(
-                    id,
+                    idProduto,
                     dadosProduto[0],
                     Double.parseDouble(dadosProduto[1]),
                     Utils.toCalendar(dadosProduto[2]),
@@ -97,6 +97,9 @@ public abstract class ProdutoControl {
         try{
             Object [] objectData = Dao.query(new Produto(id));
             
+            if (objectData == null)
+                return null;
+            
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String dataCompra = sdf.format(((Calendar)objectData[2]).getTime());
 
@@ -125,6 +128,10 @@ public abstract class ProdutoControl {
         
         try {
             ArrayList<Object []> lista = Dao.query(new Produto(null), "descricao", filtro);
+            
+            if (lista == null)
+                return null;
+            
             for (Object [] item : lista){
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 String dataCompra = sdf.format(((Calendar)item[2]).getTime());

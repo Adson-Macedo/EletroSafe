@@ -19,7 +19,7 @@ import utils.Utils;
 public abstract class ContratoGarantiaControl {
 
     public static boolean incluirContrato(String[] dadosGarantia) {
-        if (dadosGarantia.length < 3) {
+        if (dadosGarantia == null || dadosGarantia.length < 3) {
             return false;
         }
 
@@ -44,8 +44,8 @@ public abstract class ContratoGarantiaControl {
         }
     }
 
-    public static boolean alterarContrato(String[] dadosGarantia) {
-        if (dadosGarantia.length < 4) {
+    public static boolean alterarContrato(String[] dadosGarantia, Integer idGarantia) {
+        if (dadosGarantia == null || idGarantia == null || dadosGarantia.length < 3) {
             return false;
         }
 
@@ -57,10 +57,10 @@ public abstract class ContratoGarantiaControl {
 
         try {
             ContratoGarantia garantia = new ContratoGarantia(
-                    Integer.parseInt(dadosGarantia[0]),
-                    Utils.toCalendar(dadosGarantia[1]),
-                    Double.parseDouble(dadosGarantia[2]),
-                    dadosGarantia[3]
+                    idGarantia,
+                    Utils.toCalendar(dadosGarantia[0]),
+                    Double.parseDouble(dadosGarantia[1]),
+                    dadosGarantia[2]
             );
 
             return Dao.update(garantia);
@@ -83,7 +83,7 @@ public abstract class ContratoGarantiaControl {
         }
     }
 
-    public static String[] obterDadosNotaFiscal(Integer id) {
+    public static String[] obterDadosContratoGarantia(Integer id) {
         if (id == null) {
             return null;
         }
@@ -91,7 +91,10 @@ public abstract class ContratoGarantiaControl {
         String[] dados = null;
         try {
             Object[] objectData = Dao.query(new ContratoGarantia(id));
-
+            
+            if (objectData == null)
+                return null;
+            
             dados = new String[]{
                 objectData[4].toString(),
                 objectData[0].toString(),

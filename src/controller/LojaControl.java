@@ -17,7 +17,7 @@ import model.Loja;
  */
 public abstract class LojaControl {
     public static boolean cadastrarLoja(String[] dadosLoja) {
-        if (dadosLoja.length < 4) {
+        if (dadosLoja == null || dadosLoja.length < 4) {
             return false;
         }
         
@@ -42,8 +42,8 @@ public abstract class LojaControl {
         }
     }
 
-    public static boolean alterarLoja(String[] dadosLoja) {
-        if (dadosLoja.length < 5) {
+    public static boolean alterarLoja(String[] dadosLoja, Integer idLoja) {
+        if (dadosLoja == null || idLoja == null || dadosLoja.length < 4) {
             return false;
         }
 
@@ -54,11 +54,11 @@ public abstract class LojaControl {
 
         try {
             Loja loja = new Loja(
-                    null,
+                    idLoja,
+                    dadosLoja[0],
                     dadosLoja[1],
                     dadosLoja[2],
-                    dadosLoja[3],
-                    dadosLoja[4]
+                    dadosLoja[3]
             );
 
             return Dao.update(loja);
@@ -88,6 +88,9 @@ public abstract class LojaControl {
         try{
             Object [] objectData = Dao.query(new Loja(id));
             
+            if (objectData == null)
+                return null;
+            
             dados = new String []{
                 objectData[4].toString(),
                 objectData[0].toString(),
@@ -111,6 +114,10 @@ public abstract class LojaControl {
         
         try {
             ArrayList<Object []> lista = Dao.query(new Loja(null), "nome", filtro);
+            
+            if (lista == null)
+                return null;
+            
             for (Object [] item : lista){
                 lojas.add(new String[]{
                     item[4].toString(),

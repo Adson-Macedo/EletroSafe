@@ -186,7 +186,7 @@ public class SistemaControl {
                     break;
                 case LISTAR_PRODUTOS:
                     System.out.print("PESQUISA (OU <ENTER> PARA MOSTRAR TODOS): ");
-                    listarProdutos(scan.next());
+                    listarProdutos(scan.nextLine());
                     break;
                 case REMOVER_PRODUTO:
                     System.out.print("PESQUISA (OU <ENTER> PARA CONTINUAR): ");

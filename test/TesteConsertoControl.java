@@ -35,7 +35,6 @@ public class TesteConsertoControl {
     @Test
     public void testeAlterarConserto() throws ParseException{
         String conserto[] = {
-            "1",
             "Teste de conserto 2.0",
             "1",
             "1500.00",
@@ -45,7 +44,7 @@ public class TesteConsertoControl {
             "44"
         };
         
-        assertTrue(ConsertoControl.alterarConserto(conserto));
+        assertTrue(ConsertoControl.alterarConserto(conserto, 1));
     }
     
 }

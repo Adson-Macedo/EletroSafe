@@ -21,7 +21,7 @@ import utils.Utils;
  */
 public abstract class ConsertoControl {
     public static boolean incluirConserto(String[] dadosConserto, Integer idProduto) throws ParseException {
-        if (dadosConserto.length < 6) {
+        if (dadosConserto == null || idProduto == null || dadosConserto.length < 6) {
             return false;
         }
         
@@ -48,8 +48,8 @@ public abstract class ConsertoControl {
         }
     }
     
-    public static boolean alterarConserto(String[] dadosConserto) {
-        if (dadosConserto.length < 8) {
+    public static boolean alterarConserto(String[] dadosConserto, Integer idConserto) {
+        if (dadosConserto == null || idConserto == null || dadosConserto.length < 7) {
             return false;
         }
         
@@ -59,14 +59,14 @@ public abstract class ConsertoControl {
 
         try {
             Conserto conserto = new Conserto(
-                    Integer.parseInt(dadosConserto[0]),
-                    dadosConserto[1],
-                    Integer.parseInt(dadosConserto[2]),
-                    Double.parseDouble(dadosConserto[3]),
-                    Integer.parseInt(dadosConserto[4]),
-                    Utils.toCalendar(dadosConserto[5]),
-                    dadosConserto[6],
-                    Integer.parseInt(dadosConserto[7])
+                    idConserto,
+                    dadosConserto[0],
+                    Integer.parseInt(dadosConserto[1]),
+                    Double.parseDouble(dadosConserto[2]),
+                    Integer.parseInt(dadosConserto[3]),
+                    Utils.toCalendar(dadosConserto[4]),
+                    dadosConserto[5],
+                    Integer.parseInt(dadosConserto[6])
             );
 
             return Dao.update(conserto);
@@ -96,6 +96,9 @@ public abstract class ConsertoControl {
         try{
             Object [] objectData = Dao.query(new Conserto(id));
             
+            if (objectData == null)
+                return null;
+            
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String dataConserto = sdf.format(((Calendar)objectData[4]).getTime());
 
@@ -124,6 +127,9 @@ public abstract class ConsertoControl {
         
         try {
             ArrayList<Object []> lista = Dao.query(new Conserto(null), "id_produto", idProduto);
+            
+            if (lista == null)
+                return null;
             
             for (Object [] item : lista){
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
